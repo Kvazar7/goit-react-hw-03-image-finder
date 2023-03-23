@@ -7,13 +7,12 @@ class Search extends Component {
   }
 
   handleChange = ({ target: { value } }) => {
-		this.setState({ value })
+    this.setState({ value })
 	}
 
   handleSubmit = (e) => {
     e.preventDefault()
     this.props.handleSerch(this.state.value)
-    console.log(this.state)
   }
 
   render(){

@@ -1,18 +1,23 @@
 import React, { Component } from 'react';
+import Notiflix from 'notiflix';
 
 import Search from './Searchbar/searchbar'
 import { getDataImg } from 'services/getpicture';
+import { ImageGallery } from './ImageGallery/imagegallery';
 
 import css from './App.module.css'
 
-
 export class App extends Component {
-  state = {
+	state = {
 		isShowModal: false,
 		searchText: '',
+		page: 1,
+		img: [],
+		imagesArray: [],
+		
 	}
 
-  	showModal = () => {
+	showModal = () => {
 		this.setState({ isShowModal: true })
 	}
 
@@ -20,35 +25,42 @@ export class App extends Component {
 		this.setState({ isShowModal: false })
 	}
 
-  handleSerch = (searchText) => {
-    this.setState({ searchText })
-  }
+	handleSerch = (searchText) => {
+		this.setState({ searchText })
+	}
+
+	// onLoadMore = () => {
+	// 	this.setState(prevstate => ({
+	// 		page: prevState.page + 1
+	// 	}))
+	// }
 
 	componentDidUpdate(prevProps, prevState) {
-	  console.log('this.props :>> ', this.props)
-    if (prevProps.searchText !== this.props.searchText) { 
-      // this.setState({ status: STATUS.PENDING })
-      getDataImg(this.props.searchText)
-			// 	.then((response) => response.json())
-			// 	.then((data) => {
-			// 		if (data.status === 'ok')
-			// 			this.setState({
-			// 				news: data.articles,
-			// 				status: STATUS.RESOLVED,
-			// 			})
-			// 		else return Promise.reject(data.message)
-			// 	})
-			// 	.catch((error) => {
-			// 		this.setState({ error, status: STATUS.REJECTED })
-			// 	})
-    }
-  }
+		// console.log('this.props :>> ', this.props)
+		if (prevState.searchText !== this.state.searchText) {
+			getDataImg(this.state.searchText)
+				.then((response) => response.json())
+				.then(data => {
+					console.log(data)
+					if (data.hits.length === 0) {
+						Notiflix.Notify.warning('Sorry, nothing found')
+				}
+					// const hits = data.hits;
+					this.setState({ imagesArray: data.hits });
+					// console.log('imagesArray: >>', this.state.imagesArray)
+				})
+				.catch(error => {
+					Notiflix.Notify.failure(`${error}`)
+			})
+		}
+}
 
   render() {
     
-    return (
+	return (
       <div className={css.App}>
-        <Search handleSerch={this.handleSerch} />
+			<Search handleSerch={this.handleSerch} />
+			<ImageGallery images={this.state.imagesArray} />
       </div>
   )}
 };
