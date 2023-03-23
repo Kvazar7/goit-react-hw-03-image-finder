@@ -4,17 +4,17 @@ import Notiflix from 'notiflix';
 import Search from './Searchbar/searchbar'
 import { getDataImg } from 'services/getpicture';
 import { ImageGallery } from './ImageGallery/imagegallery';
+import { Loader } from './Loader/loader';
 
 import css from './App.module.css'
 
 export class App extends Component {
 	state = {
-		isShowModal: false,
 		searchText: '',
-		page: 1,
 		img: [],
 		imagesArray: [],
-		
+		loadingInProgress: false,
+		showModal: false,
 	}
 
 	showModal = () => {
@@ -36,7 +36,7 @@ export class App extends Component {
 	// }
 
 	componentDidUpdate(prevProps, prevState) {
-		// console.log('this.props :>> ', this.props)
+		
 		if (prevState.searchText !== this.state.searchText) {
 			getDataImg(this.state.searchText)
 				.then((response) => response.json())
@@ -45,13 +45,16 @@ export class App extends Component {
 					if (data.hits.length === 0) {
 						Notiflix.Notify.warning('Sorry, nothing found')
 				}
-					// const hits = data.hits;
+					
 					this.setState({ imagesArray: data.hits });
-					// console.log('imagesArray: >>', this.state.imagesArray)
+					
 				})
 				.catch(error => {
 					Notiflix.Notify.failure(`${error}`)
-			})
+				})
+				.finally(() => {
+					this.setState({loadingInProgress: false}) 
+				})
 		}
 }
 
@@ -60,6 +63,7 @@ export class App extends Component {
 	return (
       <div className={css.App}>
 			<Search handleSerch={this.handleSerch} />
+			{this.state.loadingInProgress && <Loader />}
 			<ImageGallery images={this.state.imagesArray} />
       </div>
   )}
