@@ -1,9 +1,10 @@
 import css from '../ImageGalleryItem/imagegalleryitem.module.css';
 
-export const ImageGalleryItem = ({ webFormat, largFormat, alt }) => {
+export const ImageGalleryItem = ({ webFormat, alt, largFormat, openModal}) => {
   return (
-    <li className={css.imageGalleryItem}>
-
+    <li
+      onClick={() => { openModal(largFormat) }}
+      className={css.imageGalleryItem}>
       <img
         src={webFormat}
         alt={alt}

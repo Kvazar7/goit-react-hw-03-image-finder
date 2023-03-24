@@ -3,11 +3,11 @@ import css from '../Modal/modal.module.css'
 
 export class Modal extends Component {
     componentDidMount() {
-        window.addEventListener('keydownESC', this.keyToClose)
+        window.addEventListener('keydownESC', this.keyToClose, this.handleClickOnBackdrop)
     }
 
     componentWillUnmount() {
-        window.addEventListener('keydownESC', this.keyToClose)
+        window.addEventListener('keydownESC', this.keyToClose, this.handleClickOnBackdrop)
     }
 
     keyToClose = event => {
@@ -16,7 +16,7 @@ export class Modal extends Component {
         }
     }
 
-    handleBackdropClick = event => {
+    handleClickOnBackdrop = event => {
         if (event.target === event.currentTarget) {
             this.props.onModalClose();
         }
@@ -24,9 +24,9 @@ export class Modal extends Component {
 
     render() {
         return (
-            <div class={css.Overlay}>
+            <div onClick={this.handleClickOnBackdrop} class={css.Overlay} >
                 <div class={css.Modal}>
-                    <img src="" alt="" />
+                    <img src={this.props.largFormat} alt={this.props.alt} />
                 </div>
             </div>
         )

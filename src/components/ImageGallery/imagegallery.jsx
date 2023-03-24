@@ -1,7 +1,7 @@
 import { ImageGalleryItem } from '../ImageGalleryItem/imagegalleryitem';
 import css from '../ImageGallery/imagegallery.module.css';
                           //! додати відкриття модалки
-export const ImageGallery = ({ images }) => {
+export const ImageGallery = ({ images, openModal }) => {
   return (
       
     <ul className={css.ImageGallery}>
@@ -11,6 +11,7 @@ export const ImageGallery = ({ images }) => {
             webFormat={webformatURL}
             largFormat={largeImageURL}
             alt={tags}
+            openModal={openModal}
           />
         ))}
       </ul>
