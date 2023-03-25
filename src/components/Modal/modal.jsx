@@ -1,9 +1,9 @@
+import PropTypes from 'prop-types';
 import React, { Component } from "react";
 import css from '../Modal/modal.module.css'
 
 export class Modal extends Component {
     
-
     componentDidMount() {
         window.addEventListener('keydown', this.keyToClose, this.handleClickOnBackdrop)
     }
@@ -34,4 +34,10 @@ export class Modal extends Component {
         )
     }
         
+}
+
+Modal.propTypes = {
+    imageToShow: PropTypes.string,
+    imageToShowAlt: PropTypes.string,
+    closeModal: PropTypes.func,
 }

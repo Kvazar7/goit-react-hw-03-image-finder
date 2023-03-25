@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import css from '../ImageGalleryItem/imagegalleryitem.module.css';
 
 export const ImageGalleryItem = ({ webFormat, alt, largFormat, openModal}) => {
@@ -13,3 +14,10 @@ export const ImageGalleryItem = ({ webFormat, alt, largFormat, openModal}) => {
     </li>
   );
 };
+
+ImageGalleryItem.propTypes = {
+    webFormat: PropTypes.string,
+    alt: PropTypes.string,
+    largFormat: PropTypes.string,
+    openModal: PropTypes.func,
+}

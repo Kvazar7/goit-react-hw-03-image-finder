@@ -26,10 +26,12 @@ export class App extends Component {
 
 	closeModal = () => {
 		this.setState({ isShowModal: false })
+		console.log('Close modal')
 	}
 
 	handleSerch = (searchText) => {
 		this.setState({ searchText })
+		console.log('Looking for an image')
 	}
 
 	onLoadMore = () => {
@@ -38,11 +40,8 @@ export class App extends Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		if (prevState.page !== this.state.page ||
-			prevState.searchText !== this.state.searchText) {
-			this.setState({loadingInProgress: true})
-		}
-		
+		if (prevState.page !== this.state.page || prevState.searchText !== this.state.searchText) {
+			this.setState({ loadingInProgress: true });
 			getDataImg(this.state.searchText, this.state.page)
 				.then((response) => response.json())
 				.then(data => {
@@ -53,16 +52,15 @@ export class App extends Component {
 					// this.setState({ imagesArray: data.hits });
 
 					this.setState({ imagesArray: [...prevState.imagesArray, ...data.hits] });
-					// console.log(this.state.imagesArray)
 				})
 				.catch(error => {
 					Notiflix.Notify.failure(`${error}`)
 				})
 				.finally(() => {
-					this.setState({loadingInProgress: false}) 
+					this.setState({ loadingInProgress: false })
 				})
-			}
-		
+		}
+	}
 	
 
   render() {

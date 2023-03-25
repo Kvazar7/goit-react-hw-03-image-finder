@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { Component } from 'react'
 import css from '../Searchbar/searchbar.module.css'
 
@@ -10,8 +11,8 @@ class Search extends Component {
     this.setState({ value })
 	}
 
-  handleSubmit = (e) => {
-    e.preventDefault()
+  handleSubmit = (event) => {
+    event.preventDefault()
     this.props.handleSerch(this.state.value)
   }
 
@@ -42,3 +43,7 @@ class Search extends Component {
 }
 
 export default Search
+
+Search.propTypes = {
+  handleSerch: PropTypes.func,
+}

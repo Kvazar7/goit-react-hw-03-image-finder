@@ -1,6 +1,7 @@
+import PropTypes from 'prop-types';
 import { ImageGalleryItem } from '../ImageGalleryItem/imagegalleryitem';
 import css from '../ImageGallery/imagegallery.module.css';
-                          //! додати відкриття модалки
+
 export const ImageGallery = ({ images, openModal }) => {
   return (
       
@@ -18,3 +19,7 @@ export const ImageGallery = ({ images, openModal }) => {
     );
 }; 
 
+ImageGallery.propTypes = {
+  images: PropTypes.array,
+  openModal: PropTypes.func,
+}
