@@ -19,8 +19,9 @@ export class App extends Component {
 		isShowModal: false,
 	}
 
-	showModal = () => {
-		this.setState({ isShowModal: true })
+	showModal = ( largFormat, alt ) => {
+		this.setState({ imageToShow: largFormat, imageToShowAlt: alt, isShowModal: true })
+		console.log('Open modal')
 	}
 
 	closeModal = () => {
@@ -31,16 +32,17 @@ export class App extends Component {
 		this.setState({ searchText })
 	}
 
-	onLoadMore = (page) => {
+	onLoadMore = () => {
 		this.setState(prevState => ({ page: prevState.page + 1 }))
+		console.log('Load more')
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		if (prevState.page !== this.state.page) {
+		if (prevState.page !== this.state.page ||
+			prevState.searchText !== this.state.searchText) {
 			this.setState({loadingInProgress: true})
 		}
 		
-		if (prevState.searchText !== this.state.searchText) {
 			getDataImg(this.state.searchText, this.state.page)
 				.then((response) => response.json())
 				.then(data => {
@@ -48,7 +50,10 @@ export class App extends Component {
 					if (data.hits.length === 0) {
 						Notiflix.Notify.warning('Sorry, nothing found')
 					}
-					this.setState({ imagesArray: data.hits });
+					// this.setState({ imagesArray: data.hits });
+
+					this.setState({ imagesArray: [...prevState.imagesArray, ...data.hits] });
+					// console.log(this.state.imagesArray)
 				})
 				.catch(error => {
 					Notiflix.Notify.failure(`${error}`)
@@ -57,7 +62,8 @@ export class App extends Component {
 					this.setState({loadingInProgress: false}) 
 				})
 			}
-	}
+		
+	
 
   render() {
     
@@ -65,9 +71,9 @@ export class App extends Component {
       <div className={css.App}>
 			<Search handleSerch={this.handleSerch} />
 			{this.state.loadingInProgress && <Loader />}
-			<ImageGallery images={this.state.imagesArray} openModal={this.showModal}/>
+			{this.state.imagesArray.length > 0 && <ImageGallery images={this.state.imagesArray} openModal={this.showModal}/>}
 			{this.state.imagesArray.length > 0 && <Button onLoadMore={this.onLoadMore} />}
-			{this.state.showModal && <Modal closeModal={this.closeModal} />}
+			{this.state.isShowModal && <Modal closeModal={this.closeModal} imageToShow={this.state.imageToShow} imageToShowAlt={this.state.imageToShowAlt} />}
       </div>
   	)}
 };
