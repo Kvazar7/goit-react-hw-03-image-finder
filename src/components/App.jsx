@@ -15,6 +15,7 @@ export class App extends Component {
 		searchText: '',
 		page: 1,
 		imagesArray: [],
+		imagesTotal: 0,
 		loadingInProgress: false,
 		isShowModal: false,
 	}
@@ -29,9 +30,15 @@ export class App extends Component {
 		console.log('Close modal')
 	}
 
+	// clearingThePreviousArray = (prevState) => {
+	// 	if (this.state.searchText !== prevState.searchText) {
+	// 		this.setState({ imagesArray: [] })
+	// 	}
+	// } 
+
 	handleSerch = (searchText) => {
-		this.setState({ searchText })
-		console.log('Looking for an image')
+		this.setState({ searchText, imagesArray: [] })
+		console.log('Looking for an image and photo')
 	}
 
 	onLoadMore = () => {
@@ -40,7 +47,9 @@ export class App extends Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		if (prevState.page !== this.state.page || prevState.searchText !== this.state.searchText) {
+		
+		if (prevState.page < this.state.page || prevState.searchText !== this.state.searchText) {
+			// this.setState({ imagesArray: [] });
 			this.setState({ loadingInProgress: true });
 			getDataImg(this.state.searchText, this.state.page)
 				.then((response) => response.json())
@@ -49,10 +58,11 @@ export class App extends Component {
 					if (data.hits.length === 0) {
 						Notiflix.Notify.warning('Sorry, nothing found')
 					}
-					// this.setState({ imagesArray: data.hits });
-
-					this.setState({ imagesArray: [...prevState.imagesArray, ...data.hits] });
+					
+					this.setState({ imagesTotal: data.total });
+					this.setState(prevState => ({ imagesArray: [...prevState.imagesArray, ...data.hits] }));
 				})
+				
 				.catch(error => {
 					Notiflix.Notify.failure(`${error}`)
 				})
@@ -68,10 +78,16 @@ export class App extends Component {
 	return (
       <div className={css.App}>
 			<Search handleSerch={this.handleSerch} />
-			{this.state.loadingInProgress && <Loader />}
-			{this.state.imagesArray.length > 0 && <ImageGallery images={this.state.imagesArray} openModal={this.showModal}/>}
-			{this.state.imagesArray.length > 0 && <Button onLoadMore={this.onLoadMore} />}
-			{this.state.isShowModal && <Modal closeModal={this.closeModal} imageToShow={this.state.imageToShow} imageToShowAlt={this.state.imageToShowAlt} />}
+			{this.state.loadingInProgress &&
+				<Loader />}
+			{this.state.imagesArray.length > 0 &&
+				<ImageGallery images={this.state.imagesArray} openModal={this.showModal} />}
+			{
+				// this.state.imagesArray.length > 0 &&
+				this.state.imagesTotal > this.state.imagesArray.length && 
+				<Button onLoadMore={this.onLoadMore} />}
+			{this.state.isShowModal &&
+				<Modal closeModal={this.closeModal} imageToShow={this.state.imageToShow} imageToShowAlt={this.state.imageToShowAlt} />}
       </div>
   	)}
 };
